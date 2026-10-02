@@ -263,19 +263,21 @@ function App() {
   async function handleAbortGame() {
     if (!session) return;
     setBusy(true);
+    setError("");
     try {
+      await autosaveQueue.current;
       await api.abortSession(session.id);
-    } catch {
-      /* Abort network failures are ignored because the session is reset locally regardless. */
-    } finally {
       clearSessionId();
       setSession(null);
       setDraft(zeroDraft());
       setName("");
-      setError("");
       setAbortOpen(false);
-      setBusy(false);
       void refreshEvent();
+    } catch (abortError) {
+      setError(apiMessage(abortError, t));
+      setAbortOpen(false);
+    } finally {
+      setBusy(false);
     }
   }
 
