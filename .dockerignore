@@ -1,0 +1,12 @@
+node_modules
+.git
+.agents
+.aws
+.codex
+data
+client/dist
+server/dist
+shared/dist
+.env
+.env.local
+*.log
