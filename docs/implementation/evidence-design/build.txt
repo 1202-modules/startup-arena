@@ -1,0 +1,26 @@
+
+> startup-investment-game@0.1.0 build
+> npm run build --workspace @startup-game/shared && npm run build --workspace @startup-game/server && npm run build --workspace @startup-game/client
+
+
+> @startup-game/shared@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @startup-game/server@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @startup-game/client@0.1.0 build
+> vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 50 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.61 kB │ gzip:   0.39 kB
+dist/assets/index-DWNkVkMX.css   37.87 kB │ gzip:   8.68 kB
+dist/assets/index-XgvEJQx2.js   335.01 kB │ gzip: 104.45 kB
+
+✓ built in 180ms

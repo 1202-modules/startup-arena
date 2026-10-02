@@ -10,3 +10,5 @@ shared/dist
 .env
 .env.local
 *.log
+*.tsbuildinfo
+**/*.tsbuildinfo

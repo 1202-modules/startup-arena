@@ -1,0 +1,47 @@
+[
+  {
+    "market": 2,
+    "language": "en",
+    "final": "Final capital\n1,374 $\nReturn\n+37.41%",
+    "errors": []
+  },
+  {
+    "market": 3,
+    "language": "ru",
+    "final": "Итоговый капитал\n1 291 $\nДоходность\n+29,07%",
+    "errors": []
+  },
+  {
+    "market": 4,
+    "language": "en",
+    "final": "Final capital\n1,188 $\nReturn\n+18.76%",
+    "viewport": {
+      "height": 720,
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    "errors": []
+  },
+  {
+    "market": 5,
+    "language": "ru",
+    "final": "Итоговый капитал\n1 229 $\nДоходность\n+22,91%",
+    "viewport": {
+      "height": 720,
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    "errors": []
+  },
+  {
+    "market": 6,
+    "language": "ru",
+    "final": "Итоговый капитал\n1 234 $\nДоходность\n+23,38%",
+    "viewport": {
+      "height": 720,
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    "errors": []
+  }
+]

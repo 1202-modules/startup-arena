@@ -1,0 +1,90 @@
+
+> startup-investment-game@0.1.0 test
+> npm run build && npm run test --workspace @startup-game/shared && npm run test:compiled --workspace @startup-game/server
+
+
+> startup-investment-game@0.1.0 build
+> npm run build --workspace @startup-game/shared && npm run build --workspace @startup-game/server && npm run build --workspace @startup-game/client
+
+
+> @startup-game/shared@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @startup-game/server@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @startup-game/client@0.1.0 build
+> vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 50 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.61 kB │ gzip:   0.38 kB
+dist/assets/index-DWNkVkMX.css   37.87 kB │ gzip:   8.68 kB
+dist/assets/index-BscUaLUA.js   334.91 kB │ gzip: 104.41 kB
+
+✓ built in 149ms
+
+> @startup-game/shared@0.1.0 test
+> node --test test/*.test.js
+
+✔ shared contract preserves the fixed game setup (0.985606ms)
+✔ award places preserve server ranks, including empty, short, and tied leaderboards (0.199423ms)
+✔ Hamilton allocation preserves every cent and stable remainder order (4.544574ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52.946492
+
+> @startup-game/server@0.1.0 test:compiled
+> node --test test/*.test.js
+
+✔ migration is idempotent and enforces foreign keys and domain constraints (9.505706ms)
+✔ schema v1 migrates in place and refuses ambiguous legacy duplicate names (3.032219ms)
+✔ event initialization is stable and event creation requires a closed, finished event (5.678224ms)
+✔ public leaderboard sorts by exact cents, ranks ties together, and hides private event data (3.179494ms)
+✔ file-backed database persists event, scenario choice, and leaderboard across connections (5.276947ms)
+✔ finalization atomically closes an empty event and repeats without changing its timestamp (9.478887ms)
+✔ finalization refuses to discard an active player's work and leaves the event open (3.776304ms)
+✔ all session write operations reject a finalized event while reads remain available (9.759267ms)
+✔ saved v2 schema with an unfinished v1 market migrates and finishes without repricing (19.814088ms)
+✔ independent golden DCF: four 21k flows, 1.8m terminal, 500k cash (1.597793ms)
+✔ integer rounding, undefined bases and invalid model inputs are explicit (0.774808ms)
+✔ extra capital spending reduces equity cent for cent; funding deficits remain nonnegative (0.297806ms)
+✔ every authored outcome is recomputed from business states and shocks (5.692933ms)
+✔ organizer requires authentication, validates titles and creates an event atomically (86.750199ms)
+✔ CSV neutralizes formulas, preserves cents; SQLite backup is a consistent authenticated snapshot (23.740644ms)
+✔ test-only scenario fixture pins each market only in an isolated temporary file (34.047681ms)
+✔ legacy markets preserve their original documented returns (2.038264ms)
+✔ six generated markets contain 108 localized, formula-derived company outcomes (1.935253ms)
+✔ validation rejects missing companies, incomplete localization, and returns below total loss (2.204392ms)
+✔ public projections exclude future state, shocks and outcomes at every step (3.830618ms)
+✔ integer-cent balance simulations are deterministic and no fixed company wins every market (2.103044ms)
+✔ client production assets contain no server scenario data (3.1944ms)
+✔ session store completes all three rounds without leaking future data for scenario-01 (24.4889ms)
+✔ session store completes all three rounds without leaking future data for scenario-02 (10.053993ms)
+✔ session store completes all three rounds without leaking future data for scenario-03 (8.681338ms)
+✔ session store completes all three rounds without leaking future data for scenario-04 (8.765403ms)
+✔ session store completes all three rounds without leaking future data for scenario-05 (7.803367ms)
+✔ session store completes all three rounds without leaking future data for scenario-06 (9.762465ms)
+✔ session creation validates normalized names, language, and the single-active-session limit (7.867548ms)
+✔ portfolio inputs are exact cents; invalid amounts do not mutate the draft and half cents round up (5.631748ms)
+✔ invalid state transitions leave portfolio and result records untouched (3.817387ms)
+✔ completed players with identical cents receive the same competition rank (9.23755ms)
+✔ finalized event rejects session creation and every session write (3.996522ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 304.535646

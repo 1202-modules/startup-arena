@@ -1,0 +1,25 @@
+{
+  "name": "startup-investment-game",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run build --workspace @startup-game/shared && concurrently --kill-others --names api,web \"npm run dev --workspace @startup-game/server\" \"npm run dev --workspace @startup-game/client\"",
+    "build": "npm run build --workspace @startup-game/shared && npm run build --workspace @startup-game/server && npm run build --workspace @startup-game/client",
+    "typecheck": "npm run build --workspace @startup-game/shared && npm run typecheck --workspace @startup-game/server && npm run typecheck --workspace @startup-game/client",
+    "test": "npm run build && npm run test --workspace @startup-game/shared && npm run test:compiled --workspace @startup-game/server",
+    "event:new": "npm run event:new --workspace @startup-game/server",
+    "start": "node server/dist/index.js"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.4"
+  }
+}

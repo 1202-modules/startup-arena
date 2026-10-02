@@ -1,0 +1,44 @@
+✔ migration is idempotent and enforces foreign keys and domain constraints (21.514495ms)
+✔ schema v1 migrates in place and refuses ambiguous legacy duplicate names (4.044419ms)
+✔ event initialization is stable and event creation requires a closed, finished event (10.86332ms)
+✔ public leaderboard sorts by exact cents, ranks ties together, and hides private event data (6.427827ms)
+✔ file-backed database persists event, scenario choice, and leaderboard across connections (10.380515ms)
+✔ finalization atomically closes an empty event and repeats without changing its timestamp (4.745605ms)
+✔ finalization refuses to discard an active player's work and leaves the event open (4.633016ms)
+✔ all session write operations reject a finalized event while reads remain available (14.710787ms)
+✔ saved v2 schema with an unfinished v1 market migrates and finishes without repricing (5.649025ms)
+✔ independent golden DCF: four 21k flows, 1.8m terminal, 500k cash (0.404935ms)
+✔ integer rounding, undefined bases and invalid model inputs are explicit (0.611913ms)
+✔ extra capital spending reduces equity cent for cent; funding deficits remain nonnegative (0.290852ms)
+✔ every authored outcome is recomputed from business states and shocks (4.497644ms)
+✔ organizer requires authentication, validates titles and creates an event atomically (132.254706ms)
+✔ CSV neutralizes formulas, preserves cents; SQLite backup is a consistent authenticated snapshot (34.647812ms)
+✔ test-only scenario fixture pins each market only in an isolated temporary file (28.037208ms)
+✔ legacy markets preserve their original documented returns (0.356813ms)
+✔ six generated markets contain 108 localized, formula-derived company outcomes (1.242409ms)
+✔ validation rejects missing companies, incomplete localization, and returns below total loss (1.977548ms)
+✔ public projections exclude future state, shocks and outcomes at every step (3.114165ms)
+✔ integer-cent balance simulations are deterministic and no fixed company wins every market (1.687701ms)
+✔ client production assets contain no server scenario data (3.656458ms)
+✔ session store completes all three rounds without leaking future data for scenario-01 (16.324299ms)
+✔ session store completes all three rounds without leaking future data for scenario-02 (16.566166ms)
+✔ session store completes all three rounds without leaking future data for scenario-03 (13.412402ms)
+✔ session store completes all three rounds without leaking future data for scenario-04 (13.611517ms)
+✔ session store completes all three rounds without leaking future data for scenario-05 (14.554938ms)
+✔ session store completes all three rounds without leaking future data for scenario-06 (14.247506ms)
+✔ session creation validates normalized names, language, and the single-active-session limit (11.819099ms)
+✔ portfolio inputs are exact cents; invalid amounts do not mutate the draft and half cents round up (9.012759ms)
+✔ invalid state transitions leave portfolio and result records untouched (7.758264ms)
+✔ completed players with identical cents receive the same competition rank (14.338194ms)
+✔ finalized event rejects session creation and every session write (5.90664ms)
+✔ shared contract preserves the fixed game setup (0.187947ms)
+✔ award places preserve server ranks, including empty, short, and tied leaderboards (0.272516ms)
+✔ Hamilton allocation preserves every cent and stable remainder order (1.050629ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 663.21846

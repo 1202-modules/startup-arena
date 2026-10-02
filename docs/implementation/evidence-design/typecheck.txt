@@ -1,0 +1,16 @@
+
+> startup-investment-game@0.1.0 typecheck
+> npm run build --workspace @startup-game/shared && npm run typecheck --workspace @startup-game/server && npm run typecheck --workspace @startup-game/client
+
+
+> @startup-game/shared@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @startup-game/server@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @startup-game/client@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
