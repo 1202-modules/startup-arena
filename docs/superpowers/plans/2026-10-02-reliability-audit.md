@@ -58,5 +58,5 @@
 
 - [x] Run `npm test`, `npm run typecheck`, and production build under Node.js 22.23.2; resolve failures before release.
 - [x] Run the affected player abort/recovery path and the normal RU/EN game paths in a real browser; inspect screenshots for changed UI and check browser console/network errors.
-- [ ] Review `git diff --check`, verify only intended files changed, create a production SQLite backup, deploy the exact verified commit, and verify health plus the affected flow without adding production test participants.
-- [ ] Commit the completed changes and push `main` to `origin`; verify GitHub `main` points at the deployed commit.
+- [x] Review `git diff --check`, verify only intended files changed, create a production SQLite backup, deploy the exact verified commit, and verify health plus the affected flow without adding production test participants.
+- [x] Commit the completed changes and push `main` to `origin`; verify GitHub `main` contains the deployed application revision and final release report.
