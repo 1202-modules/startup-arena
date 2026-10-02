@@ -23,3 +23,10 @@ html[data-motion="off"] *,html[data-motion="off"] *:before,html[data-motion="off
 .metric>span,.metric>strong,.metric-delta{line-height:1.2}
 
 .award-card{padding:24px}.award-winners{width:min(960px,95%);display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;max-height:280px;overflow:auto}.award-winners .award-winner{margin:8px 0}.award-winners .award-winner>strong{overflow-wrap:anywhere}
+.abort-button{color:#8b535b;padding:6px 10px;border-radius:8px;font-size:11px}
+.abort-button:hover:not(:disabled){color:#b63a46;background:#fcf1f2}
+.abort-button:focus-visible{outline:3px solid #f0a8af;outline-offset:2px}
+.danger-button{background:#b6444f;box-shadow:0 4px 12px #b6444f24;color:white}
+.danger-button:hover:not(:disabled){background:#9e343e;box-shadow:0 5px 16px #b6444f38}
+.danger-button:focus-visible{outline:3px solid #e89da4;outline-offset:3px}
+.abort-dialog{width:490px}

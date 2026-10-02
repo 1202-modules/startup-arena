@@ -2,4 +2,16 @@ node_modules/
 **/dist/
 data/
 .env
+.env.*
+!.env.example
+/.agents/
+/.aws/
+/.codex/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.log
+.DS_Store
 *.tsbuildinfo
+ssl/

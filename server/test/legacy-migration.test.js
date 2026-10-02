@@ -22,7 +22,7 @@ test('saved v2 schema with an unfinished v1 market migrates and finishes without
   PRAGMA user_version=2;
   `);
   applyMigrations(db);applyMigrations(db);
-  assert.equal(db.pragma('user_version',{simple:true}),3);
+  assert.equal(db.pragma('user_version',{simple:true}),4);
   assert.equal(db.prepare('SELECT model_version FROM events').get().model_version,1);
   assert.equal(getPublicEvent(db).leaderboard[0].finalCapitalCents,125437);
   let session=getSession(db,'legacy-active');

@@ -83,12 +83,12 @@ const english = {
   fullRanking: "Final leaderboard",
   emptyName: "Enter a name with 2–24 characters.",
   duplicateName: "That name has already played. Choose another name.",
-  activeSession: "A game is already in progress on this computer.",
+  activeSession: "Finish or cancel all active games before closing the event.",
   invalidAllocation: "The amounts must be non-negative and add up to your capital.",
   genericError: "Something went wrong. Please try again.",
   networkError: "Could not reach the game server. Your progress is saved; retry when connected.",
   badPassword: "The password is incorrect.",
-  activeGameBlocksClose: "Finish the current player's game before showing final results.",
+  activeGameBlocksClose: "Finish or cancel all active games before showing final results.",
   passwordNotConfigured: "Organizer password is not configured on the server.",
   companyNovaMind: "AI tools for small businesses",
   companyMedFlow: "Digital services for clinics",
@@ -237,7 +237,11 @@ const english = {
   investmentLabel: "Invest",
   completeData: "Current figures",
   allPlayers: "All players",
-
+  abortGame: "Quit game",
+  abortConfirmTitle: "Quit current game?",
+  abortConfirmCopy: "Match progress will be cancelled and will not be added to the leaderboard. You will return to the start screen.",
+  abortKeepPlaying: "Keep playing",
+  abortConfirmAction: "Yes, quit",
 } as const;
 
 type MessageKey = keyof typeof english;
@@ -321,12 +325,12 @@ const russian: Record<MessageKey, string> = {
   fullRanking: "Итоговый рейтинг",
   emptyName: "Введите имя длиной от 2 до 24 символов.",
   duplicateName: "Игрок с таким именем уже участвовал. Выберите другое имя.",
-  activeSession: "На этом компьютере уже идёт игра.",
+  activeSession: "Перед подведением итогов завершите или прервите все активные игры.",
   invalidAllocation: "Суммы должны быть неотрицательными и в сумме равняться капиталу.",
   genericError: "Что-то пошло не так. Попробуйте ещё раз.",
   networkError: "Не удалось связаться с сервером. Прогресс сохранён; повторите попытку после подключения.",
   badPassword: "Неверный пароль.",
-  activeGameBlocksClose: "Сначала завершите игру текущего участника.",
+  activeGameBlocksClose: "Перед подведением итогов завершите или прервите все активные игры.",
   passwordNotConfigured: "Пароль организатора не настроен на сервере.",
   companyNovaMind: "Инструменты ИИ для малого бизнеса",
   companyMedFlow: "Цифровые сервисы для клиник",
@@ -475,7 +479,11 @@ const russian: Record<MessageKey, string> = {
   investmentLabel: "Вложить",
   completeData: "Текущие показатели",
   allPlayers: "Все участники",
-
+  abortGame: "Прервать игру",
+  abortConfirmTitle: "Прервать текущую игру?",
+  abortConfirmCopy: "Прогресс матча будет аннулирован, а данные не попадут в лидерборд. Вы вернётесь на стартовый экран.",
+  abortKeepPlaying: "Продолжить игру",
+  abortConfirmAction: "Да, прервать",
 };
 
 function readSavedLanguage(): Language {

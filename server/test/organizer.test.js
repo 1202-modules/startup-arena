@@ -75,7 +75,7 @@ test('CSV neutralizes formulas, preserves cents; SQLite backup is a consistent a
   try {
     assert.equal(backup.pragma('integrity_check',{simple:true}),'ok');
     assert.deepEqual(getPublicEvent(backup),getPublicEvent(database));
-    assert.equal(backup.pragma('user_version',{simple:true}),3);
+    assert.equal(backup.pragma('user_version',{simple:true}),4);
   } finally {backup.close();}
   const backupPath=join(directory,'standalone.sqlite');
   writeFileSync(backupPath,snapshot);

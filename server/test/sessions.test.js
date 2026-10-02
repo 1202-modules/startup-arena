@@ -1,13 +1,16 @@
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { STARTUP_IDS, STARTING_CAPITAL_CENTS } from "../../shared/dist/index.js";
 import { ApiError } from "../dist/api-errors.js";
+import { createApp } from "../dist/app.js";
 import { openDatabase } from "../dist/db/database.js";
 import { getPublicEvent } from "../dist/events/event-store.js";
 import {
+  abortSession,
   advanceSession,
   completeSession,
   confirmRound,
@@ -155,7 +158,7 @@ for (const scenarioId of SCENARIO_IDS) {
   }));
 }
 
-test("session creation validates normalized names, language, and the single-active-session limit", withScenarioDatabase("scenario-01", async (database) => {
+test("session creation allows independent active players in one event", withScenarioDatabase("scenario-01", async (database) => {
   for (const name of ["", " ", "A", "x".repeat(25)]) {
     expectApiError(() => createSession(database, { name, language: "ru" }), 400, "VALIDATION_ERROR");
   }
@@ -163,7 +166,10 @@ test("session creation validates normalized names, language, and the single-acti
 
   const created = createSession(database, { name: "  Ａlex  ", language: "ru" });
   assert.equal(created.name, "Ａlex");
-  expectApiError(() => createSession(database, { name: "Another Player", language: "ru" }), 409, "SESSION_ALREADY_ACTIVE");
+  const second = createSession(database, { name: "Another Player", language: "ru" });
+  assert.equal(second.capitalCents, STARTING_CAPITAL_CENTS);
+  assert.equal(second.eventKey, created.eventKey);
+  assert.equal(getSession(database, second.id).status, "ROUND_1_DECISION");
   assert.equal(getSession(database, created.id).name, "Ａlex");
 
   for (let roundNo = 1; roundNo <= 3; roundNo += 1) {
@@ -173,10 +179,13 @@ test("session creation validates normalized names, language, and the single-acti
       cashCents: current.capitalCents,
     });
     confirmRound(database, created.id, String(roundNo));
+    assert.equal(getSession(database, second.id).capitalCents, STARTING_CAPITAL_CENTS);
+    assert.equal(getSession(database, second.id).status, "ROUND_1_DECISION");
     if (roundNo < 3) advanceSession(database, created.id);
   }
   completeSession(database, created.id);
   expectApiError(() => createSession(database, { name: "alex", language: "en" }), 409, "DUPLICATE_NAME");
+  assert.equal(getSession(database, second.id).status, "ROUND_1_DECISION");
 }));
 
 test("portfolio inputs are exact cents; invalid amounts do not mutate the draft and half cents round up", withScenarioDatabase("scenario-02", async (database) => {
@@ -266,4 +275,52 @@ test("finalized event rejects session creation and every session write", withSce
   expectApiError(() => completeSession(database, created.id), 409, "EVENT_FINALIZED");
   assert.equal(database.prepare("SELECT COUNT(*) AS count FROM round_results WHERE participant_id = ?").get(created.id).count, 0);
   assert.equal(database.prepare("SELECT confirmed FROM portfolios WHERE participant_id = ? AND round_no = 1").get(created.id).confirmed, 0);
+}));
+
+test("abortSession removes active session and portfolios, freeing the participant name", withScenarioDatabase("scenario-01", async (database) => {
+  const session = createSession(database, { name: "Player To Abort", language: "ru" });
+  assert.equal(session.name, "Player To Abort");
+  abortSession(database, session.id);
+
+  expectApiError(() => getSession(database, session.id), 404, "SESSION_NOT_FOUND");
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM participants WHERE id = ?").get(session.id).count, 0);
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM portfolios WHERE participant_id = ?").get(session.id).count, 0);
+
+  const recreated = createSession(database, { name: "Player To Abort", language: "en" });
+  assert.equal(recreated.name, "Player To Abort");
+  assert.equal(getSession(database, recreated.id).name, "Player To Abort");
+}));
+
+test("abortSession throws 404 for unknown session id", withScenarioDatabase("scenario-01", async (database) => {
+  expectApiError(() => abortSession(database, randomUUID()), 404, "SESSION_NOT_FOUND");
+}));
+
+test("abortSession throws 409 for completed session", withScenarioDatabase("scenario-01", async (database) => {
+  let session = createSession(database, { name: "Completed Player", language: "en" });
+  for (let roundNo = 1; roundNo <= 3; roundNo += 1) {
+    session = confirmRound(database, session.id, String(roundNo));
+    session = roundNo === 3 ? completeSession(database, session.id) : advanceSession(database, session.id);
+  }
+  assert.equal(session.status, "COMPLETED");
+  expectApiError(() => abortSession(database, session.id), 409, "INVALID_STATE");
+}));
+
+test("DELETE /api/sessions/:id endpoint aborts active session and returns 204", withScenarioDatabase("scenario-01", async (database) => {
+  const server = createApp(database).listen(0, "127.0.0.1");
+  await new Promise((resolve, reject) => {
+    server.once("listening", resolve);
+    server.once("error", reject);
+  });
+  const origin = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const session = createSession(database, { name: "HTTP Abort Player", language: "ru" });
+    const deleteRes = await fetch(`${origin}/api/sessions/${session.id}`, { method: "DELETE" });
+    assert.equal(deleteRes.status, 204);
+    assert.equal(await deleteRes.text(), "");
+
+    const notFoundRes = await fetch(`${origin}/api/sessions/${session.id}`, { method: "DELETE" });
+    assert.equal(notFoundRes.status, 404);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
 }));

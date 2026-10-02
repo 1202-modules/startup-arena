@@ -27,17 +27,31 @@ test("finalization atomically closes an empty event and repeats without changing
   }
 });
 
-test("finalization refuses to discard an active player's work and leaves the event open", () => {
+test("finalization waits for every active player and leaves the event open", () => {
   const database = openDatabase(":memory:");
   try {
     const opened = ensureCurrentEvent(database);
-    createSession(database, { name: "Active Player", language: "ru" });
+    let first = createSession(database, { name: "Active Player", language: "ru" });
+    let second = createSession(database, { name: "Second Player", language: "en" });
+    assert.throws(() => finalizeCurrentEvent(database), (error) =>
+      error instanceof ApiError && error.code === "SESSION_ALREADY_ACTIVE",
+    );
+    for (let round = 1; round <= 3; round++) {
+      first = confirmRound(database, first.id, String(round));
+      first = round === 3 ? completeSession(database, first.id) : advanceSession(database, first.id);
+    }
     assert.throws(() => finalizeCurrentEvent(database), (error) =>
       error instanceof ApiError && error.code === "SESSION_ALREADY_ACTIVE",
     );
     const current = database.prepare("SELECT status, finalized_at FROM events WHERE id = ?").get(opened.id);
     assert.equal(current.status, "OPEN");
     assert.equal(current.finalized_at, null);
+    for (let round = 1; round <= 3; round++) {
+      second = confirmRound(database, second.id, String(round));
+      second = round === 3 ? completeSession(database, second.id) : advanceSession(database, second.id);
+    }
+    finalizeCurrentEvent(database);
+    assert.equal(getPublicEvent(database).status, "FINALIZED");
   } finally {
     database.close();
   }

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="390" viewBox="0 0 1200 390" role="img" aria-labelledby="title desc">
+  <title id="title">Startup Arena — учебная инвестиционная игра</title>
+  <desc id="desc">Каждый участник начинает с 1000 долларов, выбирает распределение между шестью компаниями и проходит три раунда общего рыночного сценария.</desc>
+  <rect width="1200" height="390" rx="28" fill="#F6F5FB"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <rect x="58" y="48" width="238" height="34" rx="17" fill="#E9E6F8"/>
+    <text x="76" y="71" fill="#5146A8" font-size="17" font-weight="700" letter-spacing="1.1">ИНВЕСТИЦИОННАЯ ИГРА</text>
+    <text x="58" y="154" fill="#202337" font-size="66" font-weight="750" letter-spacing="-3">Startup Arena</text>
+    <text x="62" y="202" fill="#62667B" font-size="25">Три раунда. Шесть компаний.</text>
+    <text x="62" y="237" fill="#62667B" font-size="25">Один общий рынок для всех участников.</text>
+
+    <g transform="translate(62 275)">
+      <text x="0" y="0" fill="#6458C7" font-size="38" font-weight="700">1000 $</text>
+      <text x="2" y="28" fill="#73778A" font-size="18">стартовый капитал</text>
+      <path d="M182 -28V36" stroke="#D8D5E5"/>
+      <text x="210" y="0" fill="#202337" font-size="38" font-weight="700">03</text>
+      <text x="212" y="28" fill="#73778A" font-size="18">раунда</text>
+      <path d="M326 -28V36" stroke="#D8D5E5"/>
+      <text x="354" y="0" fill="#202337" font-size="38" font-weight="700">06</text>
+      <text x="356" y="28" fill="#73778A" font-size="18">стартапов</text>
+    </g>
+
+    <g transform="translate(670 38)">
+      <rect width="472" height="300" rx="24" fill="#FFFFFF" stroke="#E4E2ED"/>
+      <text x="28" y="42" fill="#6458C7" font-size="16" font-weight="700" letter-spacing="1">ОДИН СЦЕНАРИЙ НА МЕРОПРИЯТИЕ</text>
+      <text x="28" y="79" fill="#202337" font-size="25" font-weight="650">Решение каждого игрока — своё</text>
+      <text x="28" y="107" fill="#73778A" font-size="18">Рыночные события и рейтинг — общие</text>
+
+      <g transform="translate(28 135)">
+        <rect width="416" height="46" rx="12" fill="#F5F4FA"/>
+        <circle cx="25" cy="23" r="13" fill="#6458C7"/>
+        <text x="21" y="29" fill="#FFFFFF" font-size="17" font-weight="700">1</text>
+        <text x="49" y="30" fill="#303247" font-size="20" font-weight="600">Изучить показатели</text>
+        <path d="M25 46V57" stroke="#C8C4D8" stroke-width="2"/>
+        <rect y="58" width="416" height="46" rx="12" fill="#F2F7F3"/>
+        <circle cx="25" cy="81" r="13" fill="#17664D"/>
+        <text x="21" y="87" fill="#FFFFFF" font-size="17" font-weight="700">2</text>
+        <text x="49" y="88" fill="#303247" font-size="20" font-weight="600">Распределить капитал</text>
+        <path d="M25 104V115" stroke="#C8C4D8" stroke-width="2"/>
+        <rect y="116" width="416" height="46" rx="12" fill="#FBF5E9"/>
+        <circle cx="25" cy="139" r="13" fill="#A77A31"/>
+        <text x="21" y="145" fill="#FFFFFF" font-size="17" font-weight="700">3</text>
+        <text x="49" y="146" fill="#303247" font-size="20" font-weight="600">Подтвердить и увидеть итог</text>
+      </g>
+    </g>
+  </g>
+</svg>

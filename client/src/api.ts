@@ -13,6 +13,8 @@ export class ApiClientError extends Error {
   }
 }
 
+const API_BASE = "/api";
+
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   let response: Response;
   try {
@@ -50,6 +52,18 @@ export const api = {
   confirmRound: (id: string, round: number) => requestJson<SessionResponse>(`/api/sessions/${encodeURIComponent(id)}/rounds/${round}/confirm`, { method: "POST" }),
   nextRound: (id: string) => requestJson<SessionResponse>(`/api/sessions/${encodeURIComponent(id)}/next`, { method: "POST" }),
   completeSession: (id: string) => requestJson<SessionResponse>(`/api/sessions/${encodeURIComponent(id)}/complete`, { method: "POST" }),
+  async abortSession(id: string, signal?: AbortSignal): Promise<void> {
+    const response = await fetch(`${API_BASE}/sessions/${id}`, {
+      method: "DELETE",
+      headers: { Accept: "application/json" },
+      signal,
+    });
+    if (response.status === 204 || response.status === 404) return;
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      throw new ApiClientError(response.status, body?.error?.code ?? "INTERNAL_ERROR", body?.error?.message ?? "Failed to abort session.");
+    }
+  },
   finalizeEvent: (password: string) => requestJson<PublicEventResponse>("/api/event/finalize", { method: "POST", body: JSON.stringify({ password }) }),
   organizerLogin: (password: string) => requestJson<{ token: string }>("/api/organizer/login", { method: "POST", body: JSON.stringify({ password }) }),
   organizer: (token: string) => requestJson<OrganizerOverview>("/api/organizer", { headers: { authorization: `Bearer ${token}` } }),

@@ -1,13 +1,13 @@
 # Данные v2
 
-SQLite STRICT, user_version=3, foreign_keys=ON, WAL, busy timeout. Деньги — INTEGER cents. Миграции выполняются транзакционно, неоднозначные старые дубликаты имён останавливают миграцию с откатом.
+SQLite STRICT, user_version=4, foreign_keys=ON, WAL, busy timeout. Деньги — INTEGER cents. Миграции выполняются транзакционно, неоднозначные старые дубликаты имён останавливают миграцию с откатом.
 
 ## Таблицы
 
 | Таблица | Данные/инварианты |
 | --- | --- |
 | events | id, OPEN/FINALIZED, scenario_id 01..06, model_version 1/2, title, даты; один OPEN event |
-| participants | event_id, имя/name_key, ru/en, IN_PROGRESS/COMPLETED, текущий раунд 1..3, капитал/cash, итог и даты; один IN_PROGRESS на event; уникальное нормализованное имя на event |
+| participants | event_id, имя/name_key, ru/en, IN_PROGRESS/COMPLETED, текущий раунд 1..3, капитал/cash, итог и даты; несколько IN_PROGRESS на event; уникальное нормализованное имя на event |
 | portfolios | participant_id/round_no UNIQUE, шесть неотрицательных cents-позиций, cash, confirmed, даты; точную сумму проверяет сервер перед записью |
 | round_results | participant_id/round_no UNIQUE, капитал до/после, разница, шесть return_bps≥−10000, дата |
 
@@ -15,7 +15,7 @@ SQLite STRICT, user_version=3, foreign_keys=ON, WAL, busy timeout. Деньги 
 
 ## Совместимость
 
-v1→v2 схемы: добавление name_key и индексов. v2→v3: прежний scenario_id переименован в legacy_scenario_id (сохраняет старый CHECK 01..03); новый scenario_id допускает 01..06 и копирует старое значение. Существующий model_version=1, новые event создаются с 2. Новые позиции/доходности в старых записях равны 0. legacy_scenario_id у новых event — техническая совместимая заглушка, в выборе рынка не участвует. Рабочая БД и история не удаляются.
+v1→v2 схемы: добавление name_key и индексов. v2→v3: прежний scenario_id переименован в legacy_scenario_id (сохраняет старый CHECK 01..03); новый scenario_id допускает 01..06 и копирует старое значение. Существующий model_version=1, новые event создаются с 2. Новые позиции/доходности в старых записях равны 0. v3→v4: удаляется только уникальный индекс одной активной сессии на event. legacy_scenario_id у новых event — техническая совместимая заглушка, в выборе рынка не участвует. Рабочая БД и история не удаляются.
 
 ## DTO и вычисляемые данные
 

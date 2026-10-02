@@ -1,7 +1,7 @@
 import type Database from "better-sqlite3";
 import { normalizeParticipantName } from "../participants/name.js";
 
-const CURRENT_SCHEMA_VERSION = 3;
+const CURRENT_SCHEMA_VERSION = 4;
 
 const INITIAL_SCHEMA = `
   CREATE TABLE events (
@@ -112,6 +112,10 @@ export function applyMigrations(database: Database.Database): void {
         ALTER TABLE round_results ADD COLUMN orbitlink_return_bps INTEGER NOT NULL DEFAULT 0 CHECK (orbitlink_return_bps >= -10000);
       `);
       database.pragma("user_version = 3");
+    }
+    if (database.pragma("user_version", { simple: true }) === 3) {
+      database.exec("DROP INDEX IF EXISTS participants_one_in_progress_idx");
+      database.pragma("user_version = 4");
     }
     if (database.pragma("user_version", { simple: true }) !== CURRENT_SCHEMA_VERSION) {
       throw new Error(`No migration path from database schema version ${afterInitial}.`);

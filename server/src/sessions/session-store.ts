@@ -307,11 +307,6 @@ export function createSession(database: Database.Database, input: unknown): Sess
     `).get() as { id: string; status: "OPEN" | "FINALIZED" } | undefined;
     if (!event || event.status !== "OPEN") throw eventFinalized();
 
-    const active = database.prepare(`
-      SELECT 1 FROM participants WHERE event_id = ? AND status = 'IN_PROGRESS' LIMIT 1
-    `).get(event.id);
-    if (active) throw new ApiError(409, "SESSION_ALREADY_ACTIVE", "Another session is still in progress.");
-
     const duplicate = database.prepare(`
       SELECT 1 FROM participants WHERE event_id = ? AND name_key = ? LIMIT 1
     `).get(event.id, normalizedName.nameKey);
@@ -459,6 +454,19 @@ export function completeSession(database: Database.Database, id: string): Sessio
     return sessionResponse(database, requireSession(database, id));
   }).immediate();
 }
+
+export function abortSession(database: Database.Database, id: string): void {
+  database.transaction(() => {
+    const session = requireSession(database, id);
+    if (session.status !== "IN_PROGRESS") {
+      throw new ApiError(409, "INVALID_STATE", "Only active sessions can be aborted.");
+    }
+    database.prepare("DELETE FROM round_results WHERE participant_id = ?").run(id);
+    database.prepare("DELETE FROM portfolios WHERE participant_id = ?").run(id);
+    database.prepare("DELETE FROM participants WHERE id = ?").run(id);
+  }).immediate();
+}
+
 
 function buildPlayerReport(rounds: SessionRoundResult[]): PlayerReport {
   const best = rounds.reduce((a, b) => b.profitCents > a.profitCents ? b : a);

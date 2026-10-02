@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     init: true
     ports:
-      - "3001:3001"
+      - "127.0.0.1:3001:3001"
     environment:
       - NODE_ENV=production
       - HOST=0.0.0.0
@@ -22,6 +22,19 @@ services:
       options:
         max-size: "20m"
         max-file: "3"
+
+  ssl-proxy:
+    image: nginx:alpine
+    container_name: platypus_ssl
+    restart: unless-stopped
+    ports:
+      - "3443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app
 
 volumes:
   platypus_data:

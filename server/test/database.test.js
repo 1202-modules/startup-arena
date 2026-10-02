@@ -52,7 +52,7 @@ function setEventFinalized(database, eventId) {
 test("migration is idempotent and enforces foreign keys and domain constraints", () => {
   const database = openDatabase(":memory:");
   try {
-    assert.equal(database.pragma("user_version", { simple: true }), 3);
+    assert.equal(database.pragma("user_version", { simple: true }), 4);
     assert.equal(database.pragma("foreign_keys", { simple: true }), 1);
     applyMigrations(database);
     assert.deepEqual(
@@ -79,9 +79,9 @@ test("migration is idempotent and enforces foreign keys and domain constraints",
 
     const participantId = insertParticipant(database, event.id);
     insertParticipant(database, event.id, { name: "Первый активный", status: "IN_PROGRESS", capital: 100_000 });
-    assert.throws(() => insertParticipant(database, event.id, {
+    insertParticipant(database, event.id, {
       name: "Второй активный", status: "IN_PROGRESS", capital: 100_000,
-    }));
+    });
     assert.throws(() => insertParticipant(database, event.id, {
       name: "ТЕСТОВЫЙ ИГРОК", status: "IN_PROGRESS", capital: 100_000,
     }));
@@ -106,7 +106,7 @@ test("migration is idempotent and enforces foreign keys and domain constraints",
     insertResult.run(randomUUID(), participantId, 1, -10_000, stamp);
     assert.throws(() => insertResult.run(randomUUID(), participantId, 2, -10_001, stamp));
 
-    assert.equal(database.pragma("user_version", { simple: true }), 3);
+    assert.equal(database.pragma("user_version", { simple: true }), 4);
     assert.equal(database.prepare("SELECT COUNT(*) AS count FROM events").get().count, 1);
   } finally {
     if (database.open) database.close();
@@ -131,7 +131,7 @@ test("schema v1 migrates in place and refuses ambiguous legacy duplicate names",
       PRAGMA user_version = 1;
     `);
     applyMigrations(database);
-    assert.equal(database.pragma("user_version", { simple: true }), 3);
+    assert.equal(database.pragma("user_version", { simple: true }), 4);
     assert.deepEqual(
       database.prepare("SELECT id, name, name_key FROM participants").get(),
       { id: "legacy-1", name: "  Ａlex  ", name_key: "alex" },
@@ -169,6 +169,31 @@ test("schema v1 migrates in place and refuses ambiguous legacy duplicate names",
     );
   } finally {
     duplicates.close();
+  }
+});
+
+test("saved v3 database keeps an active player and accepts a second after migration", () => {
+  const directory = mkdtempSync(join(tmpdir(), "startup-v3-migration-"));
+  const path = join(directory, "game.sqlite");
+  try {
+    const before = openDatabase(path);
+    const event = ensureCurrentEvent(before);
+    const first = createSession(before, { name: "First Synthetic", language: "ru" });
+    before.exec("CREATE UNIQUE INDEX participants_one_in_progress_idx ON participants(event_id) WHERE status = 'IN_PROGRESS'; PRAGMA user_version = 3");
+    before.close();
+
+    const after = openDatabase(path);
+    try {
+      assert.equal(after.pragma("user_version", { simple: true }), 4);
+      const second = createSession(after, { name: "Second Synthetic", language: "en" });
+      assert.notEqual(second.id, first.id);
+      assert.equal(second.eventKey, event.id);
+      assert.equal(after.prepare("SELECT COUNT(*) AS count FROM participants WHERE event_id = ? AND status = 'IN_PROGRESS'").get(event.id).count, 2);
+    } finally {
+      after.close();
+    }
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
   }
 });
 

@@ -96,7 +96,7 @@ export function finalizeCurrentEvent(database: Database.Database): void {
       WHERE event_id = ? AND status = 'IN_PROGRESS'
     `).get(event.id) as { count: number };
     if (active.count > 0) {
-      throw new ApiError(409, "SESSION_ALREADY_ACTIVE", "Finish the current player's game before finalizing the event.");
+      throw new ApiError(409, "SESSION_ALREADY_ACTIVE", "Finish all active games before finalizing the event.");
     }
 
     database.prepare(`

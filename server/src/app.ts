@@ -8,6 +8,7 @@ import type Database from "better-sqlite3";
 import { ApiError } from "./api-errors.js";
 import { createNextEvent, EventCreationError, finalizeCurrentEvent, getOrganizerOverview, getPublicEvent, renameCurrentEvent } from "./events/event-store.js";
 import {
+  abortSession,
   advanceSession,
   completeSession,
   confirmRound,
@@ -162,6 +163,15 @@ export function createApp(database: Database.Database, organizerPassword?: strin
   app.post("/api/sessions/:id/complete", (request, response, next) => {
     try {
       response.json(completeSession(database, request.params.id!));
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/sessions/:id", (request, response, next) => {
+    try {
+      abortSession(database, request.params.id!);
+      response.status(204).end();
     } catch (error) {
       next(error);
     }
